@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Dr. {{ doctor.user.get_full_name }}{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="soft-card p-4 text-center h-100">
+            {% if doctor.photo %}
+                <img src="{{ doctor.photo.url }}" class="doctor-avatar-xl mb-3" style="object-fit:cover;" alt="Dr {{ doctor.user.get_full_name }}">
+            {% else %}
+                <div class="doctor-avatar doctor-avatar-xl mx-auto mb-3">{{ doctor.user.first_name|first }}{{ doctor.user.last_name|first }}</div>
+            {% endif %}
+            <h3 class="mb-2">Dr. {{ doctor.user.get_full_name|default:doctor.user.username }}</h3>
+            <div class="d-flex justify-content-center flex-wrap gap-1 mb-3">
+                {% for s in doctor.specialties.all %}<span class="badge badge-soft">{{ s.name }}</span>{% endfor %}
+            </div>
+            <hr>
+            <p class="text-muted mb-2">📍 {{ doctor.cabinet_address|default:"Adresse non renseignée" }}</p>
+            <p class="text-muted mb-2">⏱ {{ doctor.years_experience }} ans d'expérience</p>
+            {% if doctor.user.phone %}<p class="text-muted mb-3">📞 {{ doctor.user.phone }}</p>{% endif %}
+            {% if user.is_authenticated %}
+                <a href="{% url 'appointments:book' doctor.pk %}" class="btn btn-success w-100">Prendre rendez-vous</a>
+            {% else %}
+                <a href="{% url 'accounts:login' %}" class="btn btn-primary w-100">Connectez-vous pour réserver</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="soft-card p-4 mb-4">
+            <span class="eyebrow">Profil médical</span>
+            <h2 class="display-title mt-3 mb-3">À propos du médecin</h2>
+            <p class="text-muted mb-0">{{ doctor.description|default:"Aucune description détaillée n'a encore été ajoutée pour ce médecin." }}</p>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-4"><div class="stat-card soft-card"><h3>{{ doctor.years_experience }}</h3><p>Années d’expérience</p></div></div>
+            <div class="col-md-4"><div class="stat-card soft-card"><h3>{{ doctor.specialties.count }}</h3><p>Spécialité(s)</p></div></div>
+            <div class="col-md-4"><div class="stat-card soft-card"><h3>14j</h3><p>Créneaux proposés</p></div></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

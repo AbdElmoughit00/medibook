@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Réserver un rendez-vous{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-lg-9">
+<div class="soft-card p-4 p-md-5">
+    <span class="eyebrow">📅 Réservation</span>
+    <h2 class="display-title mt-3 mb-2">Rendez-vous avec Dr. {{ doctor.user.get_full_name }}</h2>
+    <p class="text-muted">Choisissez un créneau disponible puis indiquez brièvement le motif de consultation.</p>
+    {% if slots_by_date %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-4">
+            <label class="form-label fw-bold">Date et heure</label>
+            {% for d, slots in slots_by_date.items %}
+            <div class="soft-card p-3 mb-3 shadow-none">
+                <p class="mb-2 fw-bold">📅 {{ d|date:"l d F Y" }}</p>
+                <div class="slot-choice">
+                    {% for slot in slots %}
+                    <input class="form-check-input" type="radio" name="time" value="{{ slot|time:'H:i' }}" id="slot_{{ forloop.parentloop.counter }}_{{ forloop.counter }}" data-date="{{ d|date:'Y-m-d' }}" required>
+                    <label class="btn btn-sm btn-outline-success" for="slot_{{ forloop.parentloop.counter }}_{{ forloop.counter }}">{{ slot|time:"H:i" }}</label>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <input type="hidden" name="date" id="selected_date">
+        <div class="mb-3">
+            <label class="form-label fw-bold">Motif de la consultation</label>
+            <textarea name="reason" rows="4" class="form-control" placeholder="Ex. douleur, contrôle, suivi médical..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-success w-100">✅ Confirmer le rendez-vous</button>
+    </form>
+    {% else %}
+    <div class="alert alert-warning">Aucun créneau disponible dans les 14 prochains jours.</div>
+    {% endif %}
+</div>
+</div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.querySelectorAll('input[name="time"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        document.getElementById('selected_date').value = this.dataset.date;
+    });
+});
+</script>
+{% endblock %}

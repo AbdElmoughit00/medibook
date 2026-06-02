@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard administrateur{% endblock %}
+{% block content %}
+<div class="mb-4">
+    <span class="eyebrow">📊 Administration</span>
+    <h2 class="display-title mt-3 mb-1">Tableau de bord</h2>
+    <p class="text-muted mb-0">Indicateurs synthétiques de la plateforme MediBook.</p>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="stat-card soft-card"><h3>{{ total_patients }}</h3><p>Patients</p></div></div>
+    <div class="col-md-4"><div class="stat-card soft-card"><h3>{{ total_doctors }}</h3><p>Médecins</p></div></div>
+    <div class="col-md-4"><div class="stat-card soft-card"><h3>{{ total_apts }}</h3><p>Rendez-vous</p></div></div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="soft-card p-4 h-100">
+            <h4 class="mb-3">Statuts des rendez-vous</h4>
+            <div class="list-group list-group-flush">
+                {% for status, count in by_status.items %}
+                <div class="list-group-item d-flex justify-content-between align-items-center bg-transparent px-0">
+                    <span>{{ status }}</span><span class="badge badge-soft">{{ count }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="soft-card p-4 h-100">
+            <h4 class="mb-3">Rendez-vous par spécialité</h4>
+            <div class="list-group list-group-flush">
+                {% for item in by_specialty %}
+                <div class="list-group-item d-flex justify-content-between align-items-center bg-transparent px-0">
+                    <span>{{ item.name }}</span><span class="badge badge-green">{{ item.count }}</span>
+                </div>
+                {% empty %}
+                <p class="text-muted mb-0">Aucune spécialité disponible.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

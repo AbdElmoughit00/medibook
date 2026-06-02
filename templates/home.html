@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}MediBook - Accueil{% endblock %}
+{% block content %}
+<section class="home-hero-v4 mb-4">
+    <div class="hero-glow hero-glow-a"></div>
+    <div class="hero-glow hero-glow-b"></div>
+
+    <div class="row align-items-center g-5 position-relative">
+        <div class="col-lg-6">
+            <span class="eyebrow">💚 Bienvenue sur MediBook</span>
+            <h1 class="display-4 display-title mt-3 mb-3">Réservez votre consultation médicale en quelques clics.</h1>
+            <p class="lead text-muted mb-4">
+                Une plateforme moderne pour trouver un médecin, réserver un créneau et récupérer un bon de passage avec QR code à présenter à l’accueil.
+            </p>
+
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                <a href="{% url 'appointments:new' %}" class="btn btn-primary btn-lg interactive-btn">📅 Prendre rendez-vous</a>
+                <a href="{% url 'ai_orientation:orientation' %}" class="btn btn-outline-primary btn-lg interactive-btn">🤖 Tester l’orientation IA</a>
+            </div>
+
+            <div class="hero-metrics hero-metrics-v2">
+                <div class="interactive-lift"><strong>15+</strong><span>Spécialités</span></div>
+                <div class="interactive-lift"><strong>24h/24</strong><span>Réservation</span></div>
+                <div class="interactive-lift"><strong>QR + PDF</strong><span>Bon de passage</span></div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="hero-illustration-wrap interactive-float-card">
+                <div class="hero-illustration-card">
+                    <img src="{% static 'images/hero_doctor_patient.png' %}" alt="Illustration médecin et patiente" class="hero-illustration-img">
+                </div>
+
+                <div class="hero-float-badge float-left interactive-lift-sm">
+                    <span class="tiny-label">Consultation</span>
+                    <strong>Confirmée</strong>
+                </div>
+
+                <div class="hero-float-badge float-right interactive-lift-sm">
+                    <span class="tiny-label">Bon PDF</span>
+                    <strong>Téléchargeable</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="row g-4 mb-4">
+    <div class="col-md-6 col-xl-3">
+        <div class="feature-card-v2 interactive-lift h-100">
+            <div class="feature-icon mint">📅</div>
+            <h5>Réservation rapide</h5>
+            <p>Choix de la spécialité, du médecin et du créneau avec affichage dynamique des disponibilités.</p>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="feature-card-v2 interactive-lift h-100">
+            <div class="feature-icon blue">👩‍⚕️</div>
+            <h5>Médecins qualifiés</h5>
+            <p>Annuaire médical clair avec spécialités, expérience et adresses de cabinet.</p>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="feature-card-v2 interactive-lift h-100">
+            <div class="feature-icon purple">🧾</div>
+            <h5>Bon de passage</h5>
+            <p>Document avec QR code, impression et téléchargement PDF pour le passage à l’accueil / caisse.</p>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="feature-card-v2 interactive-lift h-100">
+            <div class="feature-icon pink">🤖</div>
+            <h5>Orientation IA</h5>
+            <p>Analyse simple des symptômes avec score, mots-clés détectés et suggestion de spécialité.</p>
+        </div>
+    </div>
+</section>
+
+<section class="row g-4 mb-4">
+    <div class="col-lg-7">
+        <div class="soft-card p-4 h-100 interactive-lift">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="mb-0">Comment ça marche ?</h4>
+                <a href="{% url 'appointments:new' %}" class="small fw-bold">Commencer →</a>
+            </div>
+            <div class="process-line-v2">
+                <div class="process-item-v2 interactive-lift-sm">
+                    <span>1</span>
+                    <strong>Choisir</strong>
+                    <p>Spécialité ou médecin</p>
+                </div>
+                <div class="process-item-v2 interactive-lift-sm">
+                    <span>2</span>
+                    <strong>Réserver</strong>
+                    <p>Date et heure</p>
+                </div>
+                <div class="process-item-v2 interactive-lift-sm">
+                    <span>3</span>
+                    <strong>Recevoir</strong>
+                    <p>Bon avec QR code</p>
+                </div>
+                <div class="process-item-v2 interactive-lift-sm">
+                    <span>4</span>
+                    <strong>Présenter</strong>
+                    <p>Accueil / caisse</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="soft-card p-4 h-100 ai-preview-card interactive-lift">
+            <span class="eyebrow">🤖 Démonstration IA</span>
+            <h4 class="mt-3">Orientation mieux structurée</h4>
+            <p class="text-muted mb-4">Décrivez les symptômes, la durée et l’intensité. L’application propose plusieurs spécialités classées par score avec une explication claire.</p>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="mini-chip">Cardiologie</span>
+                <span class="mini-chip">Pédiatrie</span>
+                <span class="mini-chip">Dermatologie</span>
+                <span class="mini-chip">ORL</span>
+                <span class="mini-chip">Gastro-entérologie</span>
+            </div>
+            <a href="{% url 'ai_orientation:orientation' %}" class="btn btn-info interactive-btn">Tester maintenant</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

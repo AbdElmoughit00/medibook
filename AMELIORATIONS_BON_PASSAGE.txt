@@ -1,0 +1,21 @@
+AMELIORATIONS AJOUTEES - BON DE PASSAGE
+
+Objectif : rendre la réservation utile dans un vrai parcours patient.
+
+1. Apres confirmation du rendez-vous, le patient est redirige vers un bon de passage imprimable.
+2. Le bon contient :
+   - code du rendez-vous ;
+   - nom et prenom du patient ;
+   - telephone et email ;
+   - nom du medecin ;
+   - specialite ;
+   - date et heure du creneau ;
+   - motif indique par le patient ;
+   - statut du rendez-vous.
+3. Le bon peut etre imprime avec le bouton Imprimer.
+4. Le patient retrouve le bouton Imprimer dans son dashboard.
+5. Le medecin peut consulter le bon depuis son dashboard.
+6. La validation reste securisee cote serveur : impossible de reserver un creneau deja pris.
+
+Parcours metier propose pour la presentation :
+Patient -> Reservation -> Bon de passage -> Accueil/Caisse -> Consultation.
