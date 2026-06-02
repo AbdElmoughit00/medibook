@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}Médecins{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+    <div>
+        <span class="eyebrow">👩‍⚕️ Annuaire</span>
+        <h2 class="display-title mt-3 mb-1">Trouver un médecin</h2>
+        <p class="text-muted mb-0">Recherchez par nom ou filtrez par spécialité.</p>
+    </div>
+    {% if user.is_authenticated %}
+        <a href="{% url 'appointments:new' %}" class="btn btn-success">📅 Réservation dynamique</a>
+        <a href="{% url 'ai_orientation:orientation' %}" class="btn btn-info">🤖 Orientation par symptômes</a>
+    {% endif %}
+</div>
+
+<form method="get" class="soft-card p-3 p-md-4 mb-4">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-5">
+            <label class="form-label fw-bold">Nom du médecin</label>
+            <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Ex. Amine, El Fassi...">
+        </div>
+        <div class="col-md-5">
+            <label class="form-label fw-bold">Spécialité</label>
+            <select name="specialty" class="form-select">
+                <option value="">Toutes les spécialités</option>
+                {% for s in specialties %}
+                <option value="{{ s.id }}" {% if selected_specialty == s.id|stringformat:'s' %}selected{% endif %}>{{ s.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Rechercher</button>
+        </div>
+    </div>
+</form>
+
+<div class="row g-4">
+{% for doctor in doctors %}
+<div class="col-md-6 col-xl-4">
+    <div class="card h-100">
+        <div class="card-body">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                {% if doctor.photo %}
+                    <img src="{{ doctor.photo.url }}" class="doctor-avatar" style="object-fit:cover;" alt="Dr {{ doctor.user.get_full_name }}">
+                {% else %}
+                    <div class="doctor-avatar">{{ doctor.user.first_name|first }}{{ doctor.user.last_name|first }}</div>
+                {% endif %}
+                <div>
+                    <h5 class="mb-1">Dr. {{ doctor.user.get_full_name|default:doctor.user.username }}</h5>
+                    <div class="d-flex flex-wrap gap-1">
+                        {% for s in doctor.specialties.all %}<span class="badge badge-soft">{{ s.name }}</span>{% endfor %}
+                    </div>
+                </div>
+            </div>
+            <p class="text-muted">{{ doctor.description|default:"Médecin disponible pour consultation."|truncatechars:120 }}</p>
+            <p class="small text-muted mb-0">📍 {{ doctor.cabinet_address|default:"Adresse non renseignée" }}<br>⏱ {{ doctor.years_experience }} ans d'expérience</p>
+        </div>
+        <div class="card-footer d-flex gap-2">
+            <a href="{% url 'doctors:detail' doctor.pk %}" class="btn btn-outline-primary flex-fill">Profil</a>
+            {% if user.is_authenticated %}<a href="{% url 'appointments:book' doctor.pk %}" class="btn btn-success flex-fill">Réserver</a>{% endif %}
+        </div>
+    </div>
+</div>
+{% empty %}
+<div class="col-12"><div class="alert alert-info">Aucun médecin trouvé. Ajoutez des médecins depuis l’administration Django ou lancez la commande de données démo.</div></div>
+{% endfor %}
+</div>
+{% endblock %}

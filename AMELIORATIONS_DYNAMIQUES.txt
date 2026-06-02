@@ -1,0 +1,36 @@
+AMÉLIORATIONS AJOUTÉES — VERSION DYNAMIQUE
+
+1. Nouvelle page de réservation dynamique
+   URL : /appointments/new/
+   - Choix de la spécialité.
+   - Chargement automatique des médecins correspondant à cette spécialité.
+   - Choix du médecin par carte interactive.
+   - Chargement automatique des créneaux disponibles du médecin.
+   - Sélection d'un créneau puis affichage du motif de consultation.
+   - Résumé du rendez-vous avant confirmation.
+
+2. Nouvelles routes Django
+   - /appointments/new/ : page de réservation dynamique.
+   - /appointments/api/doctors/ : retourne les médecins au format JSON.
+   - /appointments/api/slots/ : retourne les créneaux disponibles au format JSON.
+
+3. Sécurité et cohérence métier
+   - La disponibilité du créneau est revérifiée côté serveur avant création.
+   - La contrainte unique doctor/date/time reste active pour éviter une double réservation.
+   - La réservation reste protégée : l'utilisateur doit être connecté.
+
+4. Interface améliorée
+   - Étapes visuelles : Spécialité → Médecin → Créneau → Motif.
+   - Cartes médecins sélectionnables.
+   - Créneaux affichés dynamiquement.
+   - Couleurs pastel cohérentes avec le reste de l'application.
+
+5. Fichiers modifiés principalement
+   - appointments/views.py
+   - appointments/urls.py
+   - templates/appointments/dynamic_book.html
+   - templates/base.html
+   - templates/home.html
+   - templates/doctors/list.html
+   - static/js/medibook.js
+   - static/css/medibook.css

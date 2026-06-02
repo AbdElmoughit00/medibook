@@ -1,0 +1,34 @@
+AMÉLIORATIONS UI / IA / BON DE PASSAGE
+
+1. Accueil
+- Suppression de la section "Cadre du projet".
+- Accueil réorganisé pour être plus propre et plus moderne.
+- Cartes plus visuelles avec effet de mouvement au survol / clic.
+- Mise en avant claire des points importants : réservation, médecins, IA, bon de passage.
+
+2. Orientation IA
+- Structure retravaillée : formulaire à gauche, résultat à droite.
+- Ajout de blocs d’étapes plus propres.
+- Ajout d’exemples rapides cliquables.
+- Mise en avant de la meilleure correspondance.
+- Meilleure hiérarchie visuelle des recommandations.
+
+3. Réservation
+- Conservation de la logique dynamique spécialité -> médecin -> créneaux.
+- Amélioration visuelle des cartes et des boutons.
+- Effets d’interaction plus visibles au survol / clic.
+
+4. Bon de passage
+- Ajout d’un QR code dans le bon HTML.
+- Ajout d’un bouton Télécharger PDF.
+- Le PDF contient maintenant les informations du rendez-vous + QR code.
+- Le bon est plus utile pour le passage à l’accueil / caisse.
+
+5. Dépendances ajoutées
+- qrcode
+- reportlab
+
+Commande de test :
+python manage.py migrate
+python manage.py seed_demo
+python manage.py runserver

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Connexion{% endblock %}
+{% block content %}
+<div class="row justify-content-center align-items-center g-4">
+    <div class="col-lg-5">
+        <div class="soft-card p-4 p-md-5">
+            <span class="eyebrow">🔐 Accès sécurisé</span>
+            <h2 class="display-title mt-3 mb-2">Connexion</h2>
+            <p class="text-muted">Connectez-vous pour gérer vos rendez-vous et accéder à votre espace personnel.</p>
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+                {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label fw-bold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% for error in field.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+            </form>
+            <hr>
+            <p class="text-center text-muted mb-0">Pas encore de compte ? <a href="{% url 'accounts:register' %}">Créer un compte patient</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

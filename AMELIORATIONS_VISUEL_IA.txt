@@ -1,0 +1,60 @@
+AMÉLIORATIONS VISUELLES + IA — MEDIBOOK
+
+1. Interface visuelle plus attractive
+- Nouvelle page d’accueil plus moderne : hero pastel, blocs statistiques, cartes de fonctionnalités et parcours patient.
+- Design pastel renforcé : vert menthe, bleu doux, violet, rose clair, ombres légères et cartes arrondies.
+- Page de réservation améliorée : choix des spécialités sous forme de cartes, médecins filtrés dynamiquement, créneaux chargés automatiquement, résumé à droite.
+- Le parcours est plus clair pour la soutenance :
+  Patient → Orientation IA si besoin → Choix spécialité → Choix médecin → Créneau → Bon de passage.
+
+2. Spécialités ajoutées
+Le projet contient maintenant 15 spécialités :
+- Cardiologie
+- Dermatologie
+- Pédiatrie
+- Gynécologie
+- Neurologie
+- Ophtalmologie
+- ORL
+- Dentisterie
+- Médecine générale
+- Radiologie
+- Orthopédie
+- Pneumologie
+- Gastro-entérologie
+- Psychiatrie
+- Endocrinologie
+
+3. Médecins de démonstration
+La commande seed_demo crée 15 médecins, un par spécialité, avec cabinet, description et disponibilités.
+
+Commande :
+python manage.py seed_demo
+
+4. Orientation IA améliorée
+L’orientation IA ne demande plus seulement une phrase.
+Elle prend maintenant :
+- symptômes ;
+- durée ;
+- intensité ;
+- type de patient : enfant / adulte / senior.
+
+Elle retourne :
+- spécialités recommandées ;
+- score de correspondance ;
+- mots-clés détectés ;
+- explication de la recommandation ;
+- niveau d’urgence indicatif.
+
+Important :
+Cette IA reste volontairement simple et explicable, adaptée à un projet Django de cours.
+Elle ne remplace pas un diagnostic médical réel.
+
+5. Corrections techniques
+- Ajout de propriétés dans le modèle Appointment :
+  receipt_code, patient_name, doctor_name.
+- Correction du lien IA → médecins recommandés.
+- Test effectué avec :
+  python manage.py check
+  python manage.py migrate
+  python manage.py seed_demo

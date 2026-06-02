@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Espace médecin{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+    <div>
+        <span class="eyebrow">🩺 Espace médecin</span>
+        <h2 class="display-title mt-3 mb-1">Dr. {{ doctor.user.get_full_name|default:doctor.user.username }}</h2>
+        <p class="text-muted mb-0">Vue rapide des rendez-vous du jour et des prochains patients.</p>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="stat-card soft-card"><h3>{{ total }}</h3><p>Total rendez-vous</p></div></div>
+    <div class="col-md-4"><div class="stat-card soft-card"><h3>{{ confirmed }}</h3><p>Confirmés</p></div></div>
+    <div class="col-md-4"><div class="stat-card soft-card"><h3>{{ cancelled }}</h3><p>Annulés</p></div></div>
+</div>
+
+<div class="soft-card p-4 mb-4">
+    <h4 class="mb-3">📌 Rendez-vous aujourd’hui</h4>
+    {% if today_apts %}
+    <div class="table-responsive">
+    <table class="table table-hover mb-0">
+        <thead><tr><th>Heure</th><th>Patient</th><th>Motif</th><th>Statut</th><th>Bon</th><th>Actions</th></tr></thead>
+        <tbody>
+        {% for apt in today_apts %}
+        <tr>
+            <td>{{ apt.time|time:"H:i" }}</td>
+            <td>{{ apt.patient.get_full_name|default:apt.patient.username }}</td>
+            <td>{{ apt.reason|truncatechars:50 }}</td>
+            <td><span class="badge {% if apt.status == 'confirmed' %}badge-green{% elif apt.status == 'pending' %}badge-yellow{% else %}badge-soft{% endif %}">{{ apt.get_status_display }}</span></td>
+            <td><a class="btn btn-sm btn-outline-primary" href="{% url 'appointments:ticket' apt.pk %}">Voir</a></td>
+            <td class="d-flex flex-wrap gap-1">
+                {% if apt.status == 'pending' %}<a class="btn btn-sm btn-outline-success" href="{% url 'appointments:update_status' apt.pk 'confirmed' %}">Confirmer</a>{% endif %}
+                {% if apt.status != 'completed' %}<a class="btn btn-sm btn-outline-primary" href="{% url 'appointments:update_status' apt.pk 'completed' %}">Terminer</a>{% endif %}
+                {% if apt.status != 'absent' %}<a class="btn btn-sm btn-outline-danger" href="{% url 'appointments:update_status' apt.pk 'absent' %}">Absent</a>{% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}<div class="alert alert-info mb-0">Aucun rendez-vous aujourd'hui.</div>{% endif %}
+</div>
+
+<div class="soft-card p-4">
+    <h4 class="mb-3">📅 Prochains rendez-vous</h4>
+    {% if upcoming %}
+    <div class="table-responsive">
+    <table class="table table-hover mb-0">
+        <thead><tr><th>Date</th><th>Heure</th><th>Patient</th><th>Motif</th><th>Bon</th><th>Action</th></tr></thead>
+        <tbody>
+        {% for apt in upcoming %}
+        <tr>
+            <td>{{ apt.date|date:"d/m/Y" }}</td>
+            <td>{{ apt.time|time:"H:i" }}</td>
+            <td>{{ apt.patient.get_full_name|default:apt.patient.username }}</td>
+            <td>{{ apt.reason|truncatechars:50 }}</td>
+            <td><a class="btn btn-sm btn-outline-primary" href="{% url 'appointments:ticket' apt.pk %}">Voir</a></td>
+            <td>{% if apt.status == 'pending' %}<a class="btn btn-sm btn-outline-success" href="{% url 'appointments:update_status' apt.pk 'confirmed' %}">Confirmer</a>{% else %}<span class="badge badge-soft">{{ apt.get_status_display }}</span>{% endif %}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}<div class="alert alert-info mb-0">Aucun rendez-vous à venir.</div>{% endif %}
+</div>
+{% endblock %}

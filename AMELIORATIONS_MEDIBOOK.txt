@@ -1,0 +1,27 @@
+Résumé des modifications effectuées
+===================================
+
+1. Interface
+- Nouveau design pastel professionnel.
+- Navbar responsive.
+- Cartes, boutons, badges, tableaux et formulaires harmonisés.
+- Page d'accueil plus complète avec présentation du parcours utilisateur.
+
+2. Fonctionnalités ajoutées
+- Commande python manage.py seed_demo pour créer des médecins, spécialités et disponibilités.
+- Espace médecin enrichi : confirmation, finalisation et absence d'un rendez-vous.
+- Orientation médicale simplifiée sans dépendances lourdes.
+
+3. Corrections techniques
+- requirements.txt simplifié et corrigé.
+- SECRET_KEY, DEBUG et ALLOWED_HOSTS rendus plus pratiques en développement.
+- Ajout du dossier static/css et static/js.
+- Correction du lien de déconnexion vers accounts:logout.
+- Ajout de la protection contre les doubles réservations d'un même créneau.
+- Enregistrement des disponibilités dans l'administration Django.
+
+4. Commandes de test
+python manage.py check
+python manage.py migrate
+python manage.py seed_demo
+python manage.py runserver

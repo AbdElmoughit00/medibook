@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block title %}Réservation dynamique{% endblock %}
+{% block content %}
+<div class="booking-page-v2">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+        <div>
+            <span class="eyebrow">📅 Réservation intelligente</span>
+            <h2 class="display-title mt-3 mb-1">Prendre un rendez-vous</h2>
+            <p class="text-muted mb-0">Choisissez une spécialité, un médecin et un créneau. Le bon de passage sera généré après confirmation.</p>
+        </div>
+        <a href="{% url 'ai_orientation:orientation' %}" class="btn btn-info">🤖 Besoin d’aide pour choisir ?</a>
+    </div>
+
+    <form method="post" id="dynamicBookingForm">
+        {% csrf_token %}
+        <input type="hidden" name="doctor" id="doctorInput" required>
+        <input type="hidden" name="date" id="dateInput" required>
+        <input type="hidden" name="time" id="timeInput" required>
+
+        <div class="row g-4">
+            <div class="col-xl-8">
+                <div class="booking-step-card-v2">
+                    <div class="step-number-v2">1</div>
+                    <div class="flex-grow-1">
+                        <h5>Choisir une spécialité</h5>
+                        <p class="text-muted mb-3">Le choix filtre automatiquement les médecins disponibles.</p>
+                        <select name="specialty" id="specialtySelect" class="form-select d-none">
+                            <option value="">Toutes les spécialités</option>
+                            {% for specialty in specialties %}
+                                <option value="{{ specialty.id }}">{{ specialty.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="specialty-grid-v2">
+                            <button type="button" class="specialty-choice-v2 selected" data-specialty-id="">🌐<span>Toutes</span></button>
+                            {% for specialty in specialties %}
+                                <button type="button" class="specialty-choice-v2" data-specialty-id="{{ specialty.id }}">🩺<span>{{ specialty.name }}</span></button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="booking-step-card-v2 mt-4">
+                    <div class="step-number-v2">2</div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="mb-0">Choisir un médecin</h5>
+                            <span class="badge badge-soft" id="doctorCount">{{ doctors|length }} médecins</span>
+                        </div>
+                        <div class="row g-3" id="doctorCards">
+                            {% for doctor in doctors %}
+                            <div class="col-md-6 doctor-card-wrapper">
+                                <button type="button" class="choice-card doctor-choice w-100 text-start" data-doctor-id="{{ doctor.id }}">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <div class="doctor-avatar small-avatar">{{ doctor.user.first_name|first }}{{ doctor.user.last_name|first }}</div>
+                                        <div class="flex-grow-1">
+                                            <h5 class="mb-1">Dr. {{ doctor.user.get_full_name|default:doctor.user.username }}</h5>
+                                            <div class="d-flex flex-wrap gap-1 mb-2">
+                                                {% for sp in doctor.specialties.all %}<span class="badge badge-soft">{{ sp.name }}</span>{% endfor %}
+                                            </div>
+                                            <p class="small text-muted mb-1">📍 {{ doctor.cabinet_address|default:"Adresse non renseignée" }}</p>
+                                            <p class="small text-muted mb-0">⏱ {{ doctor.years_experience }} ans d'expérience</p>
+                                        </div>
+                                    </div>
+                                </button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="alert alert-info d-none mt-3" id="noDoctorsMsg">Aucun médecin trouvé pour cette spécialité.</div>
+                    </div>
+                </div>
+
+                <div class="booking-step-card-v2 mt-4 d-none" id="slotsSection">
+                    <div class="step-number-v2">3</div>
+                    <div class="flex-grow-1">
+                        <h5>Choisir une date et un créneau</h5>
+                        <p class="text-muted mb-3">Les créneaux affichés sont calculés selon les disponibilités du médecin.</p>
+                        <div id="slotsContainer" class="slots-dynamic-grid"></div>
+                        <div class="alert alert-warning d-none mt-3" id="noSlotsMsg">Aucun créneau disponible pour ce médecin dans les 14 prochains jours.</div>
+                    </div>
+                </div>
+
+                <div class="booking-step-card-v2 mt-4 d-none" id="reasonSection">
+                    <div class="step-number-v2">4</div>
+                    <div class="flex-grow-1">
+                        <h5>Motif de consultation</h5>
+                        <textarea name="reason" rows="4" class="form-control" placeholder="Ex. contrôle général, douleurs, suivi médical..." required></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-4">
+                <div class="booking-sidebar-v2 sticky-xl-top">
+                    <h5>Résumé du rendez-vous</h5>
+                    <div class="summary-line"><span>Patient</span><strong>{{ request.user.get_full_name|default:request.user.username }}</strong></div>
+                    <div class="summary-line"><span>Médecin</span><strong id="summaryDoctor">Non sélectionné</strong></div>
+                    <div class="summary-line"><span>Créneau</span><strong id="summarySlot">Non sélectionné</strong></div>
+                    <div class="summary-note">
+                        <strong>🧾 Bon de passage</strong>
+                        <p>Après confirmation, un bon imprimable sera généré pour l’accueil et la caisse.</p>
+                    </div>
+                    <div class="booking-summary d-none" id="bookingSummary">
+                        <h6 class="fw-bold mb-2">Vérification</h6>
+                        <p class="mb-0" id="summaryText"></p>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 mt-3" id="submitBtn" disabled>✅ Confirmer le rendez-vous</button>
+                    <p class="small text-muted mt-3 mb-0">🔒 Vos données restent utilisées uniquement dans le cadre de la prise de rendez-vous.</p>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="booking-steps d-none">
+        <div class="booking-step active" id="stepSpecialty">1<span>Spécialité</span></div>
+        <div class="booking-step" id="stepDoctor">2<span>Médecin</span></div>
+        <div class="booking-step" id="stepSlot">3<span>Créneau</span></div>
+        <div class="booking-step" id="stepReason">4<span>Motif</span></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+window.MEDIBOOK_URLS = {
+    doctors: "{% url 'appointments:api_doctors' %}",
+    slots: "{% url 'appointments:api_slots' %}"
+};
+</script>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block title %}Bon de passage{% endblock %}
+{% block content %}
+<div class="ticket-page">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4 no-print">
+        <div>
+            <span class="eyebrow">🧾 Bon de passage</span>
+            <h2 class="display-title mt-3 mb-1">Rendez-vous enregistré</h2>
+            <p class="text-muted mb-0">Ce bon est à imprimer, à télécharger en PDF ou à présenter à l’accueil / la caisse.</p>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <button type="button" onclick="window.print()" class="btn btn-primary interactive-btn">🖨️ Imprimer</button>
+            <a href="{% url 'appointments:ticket_pdf' appointment.pk %}" class="btn btn-success interactive-btn">⬇️ Télécharger PDF</a>
+            <a href="{% url 'dashboard:index' %}" class="btn btn-outline-primary interactive-btn">Retour dashboard</a>
+        </div>
+    </div>
+
+    <div class="ticket-card soft-card p-4 p-md-5">
+        <div class="ticket-header d-flex justify-content-between align-items-start gap-3 mb-4 flex-wrap">
+            <div>
+                <h1 class="ticket-logo mb-1">🏥 MediBook</h1>
+                <p class="text-muted mb-0">Bon de passage / orientation caisse</p>
+            </div>
+            <div class="ticket-code text-end">
+                <span>Code rendez-vous</span>
+                <strong>{{ appointment.receipt_code }}</strong>
+            </div>
+        </div>
+
+        <div class="alert alert-info no-print">
+            Présentez ce bon à l’accueil. L’agent vérifie le code, le nom du patient, le créneau et le médecin avant le passage à la caisse.
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <div class="ticket-info-box interactive-lift-sm">
+                    <span>Patient</span>
+                    <strong>{{ appointment.patient_name }}</strong>
+                    <small>{{ appointment.patient.email|default:"Email non renseigné" }}</small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="ticket-info-box interactive-lift-sm">
+                    <span>Téléphone</span>
+                    <strong>{{ appointment.patient.phone|default:"Non renseigné" }}</strong>
+                    <small>Contact patient</small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="ticket-info-box interactive-lift-sm">
+                    <span>Médecin</span>
+                    <strong>Dr. {{ appointment.doctor_name }}</strong>
+                    <small>{{ appointment.doctor.cabinet_address|default:"Adresse non renseignée" }}</small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="ticket-info-box interactive-lift-sm">
+                    <span>Spécialité</span>
+                    <strong>{{ appointment.specialty.name|default:"Spécialité non renseignée" }}</strong>
+                    <small>Service demandé</small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="ticket-info-box highlight-ticket-box interactive-lift-sm">
+                    <span>Date</span>
+                    <strong>{{ appointment.date|date:"d/m/Y" }}</strong>
+                    <small>Jour du rendez-vous</small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="ticket-info-box highlight-ticket-box interactive-lift-sm">
+                    <span>Heure / Créneau</span>
+                    <strong>{{ appointment.time|time:"H:i" }}</strong>
+                    <small>Merci d’arriver 10 minutes avant</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="ticket-reason mb-4 interactive-lift-sm">
+            <span>Motif indiqué par le patient</span>
+            <p>{{ appointment.reason }}</p>
+        </div>
+
+        <div class="row g-3 mb-4 align-items-stretch">
+            <div class="col-lg-5">
+                <div class="ticket-qr-box h-100">
+                    <div class="ticket-qr-grid">
+                        <div>
+                            <span class="ticket-mini-label">QR code</span>
+                            <h5 class="mb-2">Scan rapide à l’accueil</h5>
+                            <p class="text-muted mb-0">Le QR code contient le code, le nom du patient, le médecin, la date et l’heure du rendez-vous.</p>
+                        </div>
+                        <div class="ticket-qr-image-wrap">
+                            <img src="data:image/png;base64,{{ qr_code_base64 }}" alt="QR Code rendez-vous" class="ticket-qr-image">
+                        </div>
+                    </div>
+                    <div class="ticket-barcode-line mt-3">
+                        <strong>{{ appointment.receipt_code }}</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="ticket-process row g-3">
+                    <div class="col-md-4"><div class="process-box active interactive-lift-sm">1<br><span>Accueil</span></div></div>
+                    <div class="col-md-4"><div class="process-box interactive-lift-sm">2<br><span>Caisse</span></div></div>
+                    <div class="col-md-4"><div class="process-box interactive-lift-sm">3<br><span>Consultation</span></div></div>
+                </div>
+                <div class="ticket-note-box mt-3">
+                    <h6 class="mb-2">À retenir</h6>
+                    <ul class="mb-0">
+                        <li>Présentez le bon à l’accueil.</li>
+                        <li>Passez ensuite à la caisse si nécessaire.</li>
+                        <li>Conservez le PDF ou l’impression jusqu’à la consultation.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="ticket-footer mt-4">
+            <p class="mb-1"><strong>Statut :</strong> {{ appointment.get_status_display }}</p>
+            <p class="mb-0 text-muted">Bon généré automatiquement par MediBook. Il ne remplace pas un document médical officiel.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
